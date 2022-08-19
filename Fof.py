@@ -339,4 +339,4 @@ import sys
 if __name__ == '__main__':
     x =  float(sys.argv[1])
     fof = Fof()
-    print fof.getYforX(x) 
+    print(fof.getYforX(x)) 
