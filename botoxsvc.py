@@ -8,7 +8,7 @@ ax_client = AxClient()
 
 
 ax_client.create_experiment(
-    name="hartmann_test_experiment",
+    name="foo",
     parameters=[
     {
         "name": "x",
@@ -18,7 +18,7 @@ ax_client.create_experiment(
         "log_scale": False,  # Optional, defaults to False.
     }],
     objective_name="fof",
-    minimize=False,
+    minimize=True,
 )
 
 
@@ -30,6 +30,11 @@ def evaluate(parameters):
 
 for i in range(25):
     parameters, trial_index = ax_client.get_next_trial()
-
     ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
+
+
+
         
+print(ax_client.get_trials_data_frame())
+print(ax_client.get_best_parameters()[0]);
+print(ax_client.get_best_parameters()[1]);
