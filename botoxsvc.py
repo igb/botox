@@ -1,6 +1,10 @@
 from ax.service.ax_client import AxClient
 from Fof002 import Fof002
+from Demo import Demo
+import os
+import subprocess
 
+demo = Demo();
 
 fof = Fof002();
 
@@ -9,23 +13,29 @@ ax_client = AxClient()
 
 ax_client.create_experiment(
     name="foo",
-    parameters=[
-    {
-        "name": "x",
-        "type": "range",
-        "bounds": [-63.0, 63.0],
-        "value_type": "float",  # Optional, defaults to inference from type of "bounds".
-        "log_scale": False,  # Optional, defaults to False.
-    }],
+    parameters=demo.params,
     objective_name="fof",
-    minimize=True,
+    minimize=False,
 )
 
 
 
 def evaluate(parameters):
-    print(parameters)
-    return {"fof": fof.getYforX(parameters["x"])}
+    cmd = "sh demo.sh "
+    for name in parameters:
+        cmd +="\""
+        cmd += str(parameters[name])
+        cmd += "\" "
+    print(cmd)
+
+    proc = subprocess.Popen([cmd], stdout=subprocess.PIPE, shell=True)
+    (out, err) = proc.communicate()
+    result= float(out)
+
+    
+
+    return {"fof": result}
+   
 
 
 for i in range(25):
