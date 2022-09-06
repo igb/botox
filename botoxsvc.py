@@ -38,9 +38,13 @@ def evaluate(parameters):
    
 
 
-for i in range(25):
+for i in range(100):
     parameters, trial_index = ax_client.get_next_trial()
-    ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
+    try:
+        ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
+    except BaseException as err:
+        print(f"Unexpected {err=}, {type(err)=}")
+        ax_client.log_trial_failure(trial_index=trial_index)
 
 
 
