@@ -14,7 +14,7 @@ ax_client = AxClient()
 ax_client.create_experiment(
     name="foo",
     parameters=demo.params,
-    objective_name="fof",
+    objective_name="score",
     minimize=False,
 )
 
@@ -34,11 +34,11 @@ def evaluate(parameters):
 
     
 
-    return {"fof": result}
+    return {"score": result}
    
 
 
-for i in range(100):
+for i in range(25):
     parameters, trial_index = ax_client.get_next_trial()
     try:
         ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
@@ -48,7 +48,20 @@ for i in range(100):
 
 
 
+text_file = open("results.xml", "w")
         
-print(ax_client.get_trials_data_frame())
-print(ax_client.get_best_parameters()[0]);
-print(ax_client.get_best_parameters()[1]);
+xml = ax_client.get_trials_data_frame().to_xml()
+text_file.write(xml)
+text_file.write("\n\n<!--\n")
+
+
+
+text_file.write(str(ax_client.get_best_parameters()[1][0]["score"]));
+text_file.write("\n")
+best_params = ax_client.get_best_parameters()[0];
+best_params_keys = best_params.keys();
+for best_param in best_params_keys:
+    text_file.write(best_param + ": " + str(best_params[best_param]))
+    text_file.write("\n")                
+text_file.write("-->")                
+text_file.close()
