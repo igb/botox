@@ -12,7 +12,7 @@ ax_client = AxClient()
 
 
 ax_client.create_experiment(
-    name="foo",
+    name="autotune",
     parameters=demo.params,
     objective_name="score",
     minimize=False,
@@ -49,19 +49,20 @@ for i in range(25):
 
 
 text_file = open("results.xml", "w")
-        
-xml = ax_client.get_trials_data_frame().to_xml()
+text_file.write("<results>\n")                        
+xml = ax_client.get_trials_data_frame().to_xml().replace("<?xml version='1.0' encoding='utf-8'?>", "")
+
 text_file.write(xml)
-text_file.write("\n\n<!--\n")
+text_file.write("\n\n<best-result>\n")
 
 
 
-text_file.write(str(ax_client.get_best_parameters()[1][0]["score"]));
+text_file.write("<score>" + str(ax_client.get_best_parameters()[1][0]["score"]) + "</score>\n");
 text_file.write("\n")
 best_params = ax_client.get_best_parameters()[0];
 best_params_keys = best_params.keys();
 for best_param in best_params_keys:
-    text_file.write(best_param + ": " + str(best_params[best_param]))
-    text_file.write("\n")                
-text_file.write("-->")                
+    text_file.write("\t<param><name>" + best_param + "</name><value>" + str(best_params[best_param]) + "</value></param>\n")
+text_file.write("</best-result>\n")                
+text_file.write("</results>")                
 text_file.close()
