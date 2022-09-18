@@ -3,6 +3,10 @@ from Fof002 import Fof002
 from Demo import Demo
 import os
 import subprocess
+import sys
+
+
+iterations = int(sys.argv[1])
 
 demo = Demo();
 
@@ -38,7 +42,7 @@ def evaluate(parameters):
    
 
 
-for i in range(25):
+for i in range(iterations):
     parameters, trial_index = ax_client.get_next_trial()
     try:
         ax_client.complete_trial(trial_index=trial_index, raw_data=evaluate(parameters))
@@ -57,9 +61,11 @@ text_file.write("\n\n<best-result>\n")
 
 
 
-text_file.write("<score>" + str(ax_client.get_best_parameters()[1][0]["score"]) + "</score>\n");
+text_file.write("<score>" + str(ax_client.get_best_parameters(use_model_predictions=False)[1][0]["score"]) + "</score>\n");
 text_file.write("\n")
-best_params = ax_client.get_best_parameters()[0];
+print(ax_client.get_best_parameters(use_model_predictions=False)[1][0]["score"])
+print(ax_client.get_best_parameters(use_model_predictions=False))
+best_params = ax_client.get_best_parameters(use_model_predictions=False)[0];
 best_params_keys = best_params.keys();
 for best_param in best_params_keys:
     text_file.write("\t<param><name>" + best_param + "</name><value>" + str(best_params[best_param]) + "</value></param>\n")
